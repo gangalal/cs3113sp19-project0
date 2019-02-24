@@ -6,6 +6,10 @@
 #include <stdlib.h>
 #include <string.h>
 #define MAX_READ 20
+
+void fileReader(FILE* fd, char* oneLine, int line, int counter, char buff[MAX_READ], int* charCounter, char character, char** argv, int* byte);
+
+
 int main( int argc, char** argv)
 {
         FILE* fd; 
@@ -16,45 +20,47 @@ int main( int argc, char** argv)
         ssize_t num;
         int charCounter = 0;
 	int spaceCounter = 0;
+	char character;
+	int byte = 0;
 if ((argc ==2 ) && (strcmp(argv[1], "-h") == 0)) 
 {
-printf("usage: ouhead [-n N] <file>\n");
+printf("usage: ouwc [-l | -c] <file>");
         exit(-1);
 }
-if (argc == 3)
+
+
+
+if ((argc == 3)&& (strcmp(argv[1], "-l") == 0)&& (strcmp(argv[2], "-c") == 0))
 {
-while((num = read(STDIN_FILENO, buff, MAX_READ))>atoi(argv[2]))
+   num = read(STDIN_FILENO, buff, MAX_READ);
+        if (num == -1)
 {
-        ssize_t num1;
-        num1 = write(STDOUT_FILENO, buff, num);
-        if (num != num1)
-        {   
-                  fprintf(stderr,"can't read file\n");
-        }   
+        return EXIT_FAILURE;
 }
-if (argc == 3)
+
+buff[num] = '\0';
+while (buff[counter] != '\0')//this loop counts number of lines in a file
 {
-while((num = read(STDIN_FILENO, buff, MAX_READ))>atoi(argv[2]))
-{
-        ssize_t num1;
-        num1 = write(STDOUT_FILENO, buff, num);
-        if (num != num1)
-        {   
-                  fprintf(stderr,"can't read file\n");
-        }   
+        if (buff[counter] =='\n')
+                        {
+                        charCounter++;
+                        }
+counter++;
 }
-if (num < 0 )
-{
-          fprintf(stderr,"can't read file\n");
-}
+printf("        %d        %ld\n", charCounter, num);//prints number of lines and bytes 
 return EXIT_SUCCESS;
+
 }
+
+
+
 if (argc == 2)
 {
- fd = fopen(argv[1], "r");
+fd = fopen(argv[1], "r");
   if (fd == NULL)
  {
   fprintf(stderr,"error read only\n");
+return 0;
  }
 character = getc(fd);
  while(character != EOF)
@@ -63,22 +69,71 @@ character = getc(fd);
  {
  charCounter = charCounter + 1;
  }
- if (character == ' ')
- {
- spaceCounter = spaceCounter + 1;
- }
+ byte = byte + sizeof(character);
  character = getc(fd);
   }
  fclose(fd);
 
+printf("        %d        %d\n", charCounter, byte); 
 
-
-
-
-
-
-return EXIT_SUCCESS;
 }
+
+
+
+if ((argc == 3) && (strcmp(argv[1], "-l") == 0))
+{
+fd = fopen(argv[2], "r");
+  if (fd == NULL)
+ {
+  fprintf(stderr,"error read only\n");
+return 0;
+ }
+character = getc(fd);
+ while(character != EOF)
+  {
+ if (character == '\n')
+ {
+ charCounter = charCounter + 1;
+ }
+ byte = byte + sizeof(character);
+ character = getc(fd);
+  }
+ fclose(fd);
+
+printf("        %d\n", charCounter);
+return EXIT_SUCCESS;
+
+}
+
+
+if ((argc == 3) && (strcmp(argv[1], "-c") == 0))
+{
+fd = fopen(argv[2], "r");
+  if (fd == NULL)
+ {
+  fprintf(stderr,"error read only\n");
+return 0;
+ }
+character = getc(fd);
+ while(character != EOF)
+  {
+ if (character == '\n')
+ {
+ charCounter = charCounter + 1;
+ }
+ byte = byte + sizeof(character);
+ character = getc(fd);
+  }
+ fclose(fd);
+
+printf("        %d\n", byte);
+return EXIT_SUCCESS;
+
+}
+
+
+
+
 
 if (argc == 4)
 {
@@ -86,33 +141,24 @@ fd = fopen(argv[3], "r");
   if (fd == NULL)
  {
   fprintf(stderr,"error read only\n");
+return 0;
  }
-character2 = getc(fd);
- while(character2 != EOF)
+character = getc(fd);
+ while(character != EOF)
   {
- if (character2 == '\n')
+ if (character == '\n')
  {
- charCounter2 = charCounter2 + 1;
+ charCounter = charCounter + 1;
  }
- character2 = getc(fd);
+ byte = byte + sizeof(character);
+ character = getc(fd);
   }
  fclose(fd);
-fd = fopen(argv[3], "r");
-if (fd == NULL)
-{
-fprintf(stderr,"error read only\n");
+
+printf("        %d        %d\n", charCounter, byte); 
 }
-while( getline(&oneLine, &line, fd) != -1)
-{
-        counter++;
-        if (counter >  charCounter2 - atoi(argv[2]) )
-        {
-          printf("%s", oneLine);
-        }
-}
-fclose(fd);
+
 return EXIT_SUCCESS;
 }
-return EXIT_SUCCESS;
-}
+
 

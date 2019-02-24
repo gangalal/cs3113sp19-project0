@@ -32,7 +32,7 @@ int main( int argc, char** argv)
         }
         else
         {
-                for (int i = num1; i>=num2; i--)
+                for (int i = num1; i>=num2; i--)//prints in reverse order
         {
                 printf("%d\n", i);
         }

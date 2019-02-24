@@ -11,10 +11,11 @@ int main( int argc, char** argv)
         FILE* fd;
         char* oneLine = NULL;
         int line = 0;
-        int counter;
+        int counter = 0;
+	int charCounter = 0;
         char buff[MAX_READ];
         ssize_t num;
-
+        
 
 //printf("%d ", argc);
 
@@ -26,24 +27,34 @@ printf("usage: ouhead [-n N] <file>\n");
 
 if (argc == 3)
 {
-while((num = read(STDIN_FILENO, buff, MAX_READ))>atoi(argv[2]))
-{
-        ssize_t num1;
-        num1 = write(STDOUT_FILENO, buff, num);
 
-        if (num != num1)
+ num = read(STDIN_FILENO, buff, MAX_READ);
+        if (num == -1)
+{
+        return EXIT_FAILURE; //returns if file can't read
+}
+
+buff[num] = '\0';
+while (buff[counter] != '\0')
+{
+        if (charCounter == atoi(argv[2]))
+        break;
+
+        if (buff[counter] =='\n')
+                        {
+ 
+                        charCounter++; //counting lines
+                        }
+        if(charCounter < atoi(argv[2]));
         {
-                  fprintf(stderr,"can't read file\n");
+                printf("%c", buff[counter]);
         }
+
+counter++;
 }
 
-if (num < 0 )
-{
-          fprintf(stderr,"can't read file\n");
-}
+return EXIT_SUCCESS; //returns success if file is readable
 
-
-return EXIT_SUCCESS;
 }
 
 

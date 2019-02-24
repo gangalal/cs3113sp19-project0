@@ -5,7 +5,7 @@ int main( int argc, char** argv)
 {
 if( argc == 1)
 {
-        printf("\n");
+        printf("\n");//prints only next line
         return EXIT_SUCCESS;
 }
 for(int i = 1; i<argc; i++)
